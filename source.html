@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saturn: Jewel of the Solar System</title>
+    <style>
+        :root {
+            --space-black: #0a0a12;
+            --deep-space: #12121f;
+            --saturn-gold: #e3b04b;
+            --ring-ice: #a7d0e0;
+            --moon-blue: #4d79a8;
+            --cassini-purple: #6a4c93;
+            --text-light: #f0f0f0;
+            --text-dim: #b8b8c0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background-color: var(--deep-space);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-image: radial-gradient(circle at center, var(--space-black) 0%, var(--deep-space) 100%);
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            background: linear-gradient(90deg, var(--saturn-gold), var(--ring-ice));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--saturn-gold);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--saturn-gold), transparent);
+        }
+
+        p {
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Layout */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--space-black) 70%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            color: var(--saturn-gold);
+            border: 1px solid var(--saturn-gold);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--saturn-gold);
+            color: var(--space-black);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(227, 176, 75, 0.3);
+        }
+
+        /* Saturn Canvas */
+        #saturnCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Ring System Section */
+        .ring-system {
+            background: linear-gradient(to bottom, rgba(10, 10, 18, 0.8), rgba(10, 10, 18, 1));
+        }
+
+        .ring-diagram {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+            position: relative;
+            height: 300px;
+        }
+
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border-style: solid;
+            border-color: transparent;
+            border-top-color: var(--ring-ice);
+            border-bottom-color: var(--ring-ice);
+            opacity: 0.7;
+            transform-origin: center;
+            animation: rotateRing linear infinite;
+        }
+
+        .ring:hover {
+            opacity: 1;
+        }
+
+        .ring-1 {
+            width: 300px;
+            height: 300px;
+            border-width: 15px;
+            animation-duration: 60s;
+        }
+
+        .ring-2 {
+            width: 250px;
+            height: 250px;
+            border-width: 30px;
+            animation-duration: 50s;
+            animation-direction: reverse;
+        }
+
+        .ring-3 {
+            width: 200px;
+            height: 200px;
+            border-width: 20px;
+            animation-duration: 40s;
+        }
+
+        .ring-info {
+            display: none;
+            background: rgba(18, 18, 31, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .ring:hover + .ring-info {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Moons Gallery */
+        .moons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .moon-card {
+            background: rgba(18, 18, 31, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .moon-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(227, 176, 75, 0.2);
+        }
+
+        .moon-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--saturn-gold);
+        }
+
+        .moon-card-content {
+            padding: 1.5rem;
+        }
+
+        .moon-card h3 {
+            color: var(--ring-ice);
+            margin-bottom: 0.5rem;
+        }
+
+        .moon-card p {
+            font-size: 0.9rem;
+        }
+
+        /* Cassini Mission */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: var(--saturn-gold);
+        }
+
+        .timeline-item {
+            padding: 1.5rem;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-content {
+            background: rgba(18, 18, 31, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid rgba(18, 18, 31, 0.8);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid rgba(18, 18, 31, 0.8);
+        }
+
+        .timeline-date {
+            color: var(--saturn-gold);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Facts Section */
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .fact-card {
+            background: rgba(18, 18, 31, 0.7);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--saturn-gold);
+        }
+
+        .fact-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(227, 176, 75, 0.2);
+        }
+
+        .fact-card h3 {
+            color: var(--saturn-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--space-black);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(227, 176, 75, 0.2);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .social-links a {
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--saturn-gold);
+        }
+
+        /* Animations */
+        @keyframes rotateRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 0;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content::after,
+            .timeline-item:nth-child(even) .timeline-content::after {
+                left: -10px;
+                border-right: 10px solid rgba(18, 18, 31, 0.8);
+                border-left: 0;
+            }
+        }
+    </style>
+    <link rel="icon" type="image/png" href="http://localhost:3001/output_images/man2a514-2eecrn5x/favicon-saturn-icon_32x32.png">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<base target="_self">
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <canvas id="saturnCanvas"></canvas>
+        <div class="hero-content">
+            <h1>Saturn</h1>
+            <p>The Jewel of Our Solar System</p>
+            <p>A world of breathtaking beauty, with its magnificent rings and diverse moons, Saturn has captivated astronomers for centuries.</p>
+            <a href="#rings" class="btn">Explore the Rings</a>
+        </div>
+    </section>
+
+    <!-- Ring System Section -->
+    <section id="rings" class="ring-system">
+        <div class="container">
+            <h2>The Ring System</h2>
+            <p>Saturn's rings are one of the most spectacular sights in our solar system. Made up of billions of particles of ice and rock, they span up to 282,000 km across but are only about 10 meters thick in most places.</p>
+            
+            <div class="ring-diagram">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                
+                <div class="ring-info">
+                    <h3>Main Ring Components</h3>
+                    <p>The rings are divided into several sections: the bright A and B rings separated by the Cassini Division, and the faint C ring. Beyond these are the dusty F, G, and E rings.</p>
+                </div>
+            </div>
+            
+            <div class="facts-grid">
+                <div class="fact-card">
+                    <h3>Composition</h3>
+                    <p>99% water ice with traces of rocky material</p>
+                </div>
+                <div class="fact-card">
+                    <h3>Age</h3>
+                    <p>Estimated between 10-100 million years old</p>
+                </div>
+                <div class="fact-card">
+                    <h3>Thickness</h3>
+                    <p>As thin as 10 meters in some places</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Moons Gallery -->
+    <section id="moons">
+        <div class="container">
+            <h2>Saturn's Remarkable Moons</h2>
+            <p>With over 80 confirmed moons, Saturn has the most extensive moon system in our solar system. These range from tiny moonlets less than 1 km across to massive Titan, which is larger than the planet Mercury.</p>
+            
+            <div class="moons-grid">
+                <div class="moon-card">
+                    <img src="http://localhost:3001/output_images/man2a514-2eecrn5x/saturn-moon-titan-surface_800x600.png" alt="Titan">
+                    <div class="moon-card-content">
+                        <h3>Titan</h3>
+                        <p>The only moon with a dense atmosphere and liquid lakes (of methane and ethane) on its surface.</p>
+                    </div>
+                </div>
+                
+                <div class="moon-card">
+                    <img src="http://localhost:3001/output_images/man2a514-2eecrn5x/saturn-moon-enceladus-geysers_800x600.png" alt="Enceladus">
+                    <div class="moon-card-content">
+                        <h3>Enceladus</h3>
+                        <p>Home to cryovolcanoes that spew water ice into space, potentially harboring a subsurface ocean.</p>
+                    </div>
+                </div>
+                
+                <div class="moon-card">
+                    <img src="http://localhost:3001/output_images/man2a514-2eecrn5x/saturn-moon-mimas-crater_800x600.png" alt="Mimas">
+                    <div class="moon-card-content">
+                        <h3>Mimas</h3>
+                        <p>Known as the "Death Star" moon due to its massive Herschel crater that makes it resemble the fictional space station.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cassini Mission -->
+    <section id="cassini" class="cassini-mission">
+        <div class="container">
+            <h2>The Cassini-Huygens Mission</h2>
+            <p>NASA's Cassini spacecraft spent 13 years studying Saturn, its rings, and moons before its dramatic "Grand Finale" plunge into Saturn's atmosphere in 2017.</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">1997</div>
+                        <h3>Launch</h3>
+                        <p>Cassini-Huygens launched from Cape Canaveral on October 15, 1997.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2004</div>
+                        <h3>Saturn Arrival</h3>
+                        <p>After a 7-year journey, Cassini entered Saturn's orbit on July 1, 2004.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2005</div>
+                        <h3>Huygens Lands on Titan</h3>
+                        <p>The Huygens probe descended through Titan's atmosphere, providing the first images from its surface.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2017</div>
+                        <h3>Grand Finale</h3>
+                        <p>After 13 years of discoveries, Cassini made its final plunge into Saturn's atmosphere on September 15, 2017.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unique Features -->
+    <section id="features">
+        <div class="container">
+            <h2>Saturn's Unique Features</h2>
+            <p>Saturn stands out among the planets with several extraordinary characteristics that continue to fascinate scientists.</p>
+            
+            <div class="facts-grid">
+                <div class="fact-card">
+                    <h3>Least Dense Planet</h3>
+                    <p>With a density less than water, Saturn could theoretically float in a giant bathtub.</p>
+                </div>
+                <div class="fact-card">
+                    <h3>Fast Winds</h3>
+                    <p>Saturn's winds can reach 1,800 km/h, faster than any other planet.</p>
+                </div>
+                <div class="fact-card">
+                    <h3>Hexagonal Storm</h3>
+                    <p>A persistent hexagonal cloud pattern at Saturn's north pole has puzzled scientists since its discovery.</p>
+                </div>
+                <div class="fact-card">
+                    <h3>Short Days</h3>
+                    <p>A Saturn day lasts only 10.7 hours, despite its massive size.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>Explore the Cosmos</h3>
+            <p>Saturn continues to reveal its secrets, inspiring wonder and scientific discovery.</p>
+            
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+            </div>
+            
+            <p>© 2025 Cosmic Explorations. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js Saturn Animation
+        let scene, camera, renderer, saturn, rings;
+        
+        function initSaturnAnimation() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a12);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('saturnCanvas'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Create Saturn
+            const saturnGeometry = new THREE.SphereGeometry(1, 32, 32);
+            const saturnMaterial = new THREE.MeshPhongMaterial({
+                color: 0xe3b04b,
+                specular: 0x111111,
+                shininess: 30,
+                map: new THREE.TextureLoader().load('http://localhost:3001/output_images/man2a514-2eecrn5x/saturn-surface-texture_1024x512.png')
+            });
+            saturn = new THREE.Mesh(saturnGeometry, saturnMaterial);
+            scene.add(saturn);
+            
+            // Create rings
+            const ringGeometry = new THREE.RingGeometry(1.5, 2.5, 64);
+            const ringMaterial = new THREE.MeshBasicMaterial({
+                color: 0xa7d0e0,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.7
+            });
+            rings = new THREE.Mesh(ringGeometry, ringMaterial);
+            rings.rotation.x = Math.PI / 2;
+            scene.add(rings);
+            
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+            
+            // Add directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // Start animation loop
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate Saturn and rings
+            saturn.rotation.y += 0.002;
+            rings.rotation.z += 0.001;
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Initialize animation when page loads
+        window.onload = initSaturnAnimation;
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Moon card expansion functionality
+        document.querySelectorAll('.moon-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const content = this.querySelector('.moon-card-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+              
+          
+                
+          
+              
